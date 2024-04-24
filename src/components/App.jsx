@@ -1,5 +1,5 @@
 // import { Component } from 'react';
-import axios from "axios";
+//import axios from "axios";
 
 import css from './App.module.css'
 import { Searchbar } from "./Searchbar/Searchbar";
@@ -19,15 +19,15 @@ export const App = () => {
 
 
   //Pixabay API
-  const fetchGallery = async (q, page) => {
-    const baseURL = `https://pixabay.com/api/?q=${q}&page=${page}&key=42474865-55c278fe0045234625bd75cd9&image_type=photo&orientation=horizontal&per_page=12`
-    try {
-      const response = await axios.get('https://pixabay.com/api/?key=42474865-55c278fe0045234625bd75cd9&q=yellow+flowers&image_type=photo&pretty=true');
-      return response.data.hits
-    } catch (error) {
-      console.error('Fetching error:', error)
-    }
-  }
+  // const fetchGallery = async (q, page) => {
+  //   const baseURL = `https://pixabay.com/api/?q=${q}&page=${page}&key=42474865-55c278fe0045234625bd75cd9&image_type=photo&orientation=horizontal&per_page=12`
+  //   try {
+  //     const response = await axios.get('https://pixabay.com/api/?key=42474865-55c278fe0045234625bd75cd9&q=yellow+flowers&image_type=photo&pretty=true');
+  //     return response.data.hits
+  //   } catch (error) {
+  //     console.error('Fetching error:', error)
+  //   }
+  // }
 
 //   W odpowiedzi od api przychodzi tablica obiektów, w których ważne są dla ciebie tylko następujące właściwości.
 

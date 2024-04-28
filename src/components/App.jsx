@@ -15,7 +15,7 @@ export const App = () => {
   //State
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  //const [error, setError] = useState('');
   const [searchedImages, setSearchedImages] = useState('')
   const [totalHits, setTotalHits] = useState(0)
   const [disabledButton, setDisabledButton] = useState(true);
@@ -34,7 +34,7 @@ const fetchGallery = async (q, page) => {
 
       return response.data
     } catch (error) {
-      setError(error);
+      //setError(error);
         console.error('Fetching error:', error)
     }
 }

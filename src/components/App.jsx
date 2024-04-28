@@ -1,33 +1,84 @@
-// import { Component } from 'react';
-//import axios from "axios";
+//import { Component } from 'react';
 
+import axios from "axios";
 import css from './App.module.css'
 import { Searchbar } from "./Searchbar/Searchbar";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { ImageGalleryItem } from "./ImageGalleryItem/ImageGalleryItem";
 import { Loader } from "./Loader/Loader";
+import { useState } from 'react';
+import { Button } from "./Button/Button";
 //import { Modal } from "./Modal/Modal";
-
-
-
-// axios.defaults.baseURL = "https://hn.algolia.com/api/v1";
 
 export const App = () => {
 
   //State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [searchedImages, setSearchedImages] = useState('')
+  const [totalHits, setTotalHits] = useState(0)
+  const [disabledButton, setDisabledButton] = useState(true);
+  console.log(searchedImages)
+  console.log(currentPage)
+  console.log(totalHits)
+
+//Pixabay API
+const fetchGallery = async (q, page) => {
+    const baseURL = `https://pixabay.com/api/?q=${q}&page=${page}&key=42474865-55c278fe0045234625bd75cd9&image_type=photo&orientation=horizontal&per_page=12`
+    try {
+      const response = await axios.get(baseURL);
+      console.log(response);
+      console.log(response.data.hits);
+      console.log(response.data.totalHits)
+
+      return response.data
+    } catch (error) {
+      setError(error);
+        console.error('Fetching error:', error)
+    }
+}
+
+  //Handle and fetch value from input
+  const fetchSearchedValue = async (data) => {
+    setIsLoading(true);
+    setSearchedImages(data);
+    setCurrentPage(1);
+    await fetchGallery(searchedImages, currentPage)
+      .then((data) => {
+        if (currentPage === 1) {
+          // const totalHitsNumber = response.data.totalHits;
+          console.log('fetch przy 1 stronie')
+          setTotalHits(() => data.totalHits);
+          checkIfLoadMore(data.totalHits);
+        };
+      });
+    setTimeout(() => { setIsLoading(false) }, 1000);
+  }
+
+  //check if loadmore is abled
+  const checkIfLoadMore = (data) => {
+          if (data > 12) {
+          console.log('totalHits większe niż 12')
+          setDisabledButton(false);
+          setCurrentPage(currentPage => currentPage + 1);
+          setTotalHits(totalHits => totalHits - 12);
+        } else {
+          setDisabledButton(true)
+        };
+
+  }
+
+  //load more images
+  const loadMore = async() => {
+    setIsLoading(true);
+    await fetchGallery(searchedImages, currentPage);
+    checkIfLoadMore(totalHits);
+    setTimeout(() => { setIsLoading(false) }, 1000);
+
+  }
 
 
-
-  //Pixabay API
-  // const fetchGallery = async (q, page) => {
-  //   const baseURL = `https://pixabay.com/api/?q=${q}&page=${page}&key=42474865-55c278fe0045234625bd75cd9&image_type=photo&orientation=horizontal&per_page=12`
-  //   try {
-  //     const response = await axios.get('https://pixabay.com/api/?key=42474865-55c278fe0045234625bd75cd9&q=yellow+flowers&image_type=photo&pretty=true');
-  //     return response.data.hits
-  //   } catch (error) {
-  //     console.error('Fetching error:', error)
-  //   }
-  // }
 
 //   W odpowiedzi od api przychodzi tablica obiektów, w których ważne są dla ciebie tylko następujące właściwości.
 
@@ -38,11 +89,11 @@ export const App = () => {
   
   return (
     <div className={css.app}>
-      <Searchbar/>
+      <Searchbar onSubmit={fetchSearchedValue}/>
       <ImageGallery>
-        <ImageGalleryItem />
-      </ImageGallery> 
-      <Loader />
+        {isLoading ? <Loader/> : <ImageGalleryItem/> }
+      </ImageGallery>
+      <Button disabled={disabledButton} onClick={loadMore } />
 
     </div>
   );

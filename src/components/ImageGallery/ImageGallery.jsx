@@ -1,4 +1,4 @@
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css'
 
 export const ImageGallery = ({children}) => {
@@ -12,5 +12,6 @@ export const ImageGallery = ({children}) => {
 };
 
 ImageGallery.propTypes = {
+    children: PropTypes.array,
     
 }

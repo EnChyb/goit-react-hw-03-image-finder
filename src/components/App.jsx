@@ -29,10 +29,6 @@ const fetchGallery = async (q, page) => {
     const baseURL = `https://pixabay.com/api/?q=${q}&page=${page}&key=42474865-55c278fe0045234625bd75cd9&image_type=photo&orientation=horizontal&per_page=12`
     try {
       const response = await axios.get(baseURL);
-      console.log(response);
-      console.log(response.data.hits);
-      console.log(response.data.totalHits)
-
       return response.data
     } catch (error) {
         console.error('Fetching error:', error)
@@ -48,7 +44,6 @@ const fetchGallery = async (q, page) => {
     await fetchGallery(searchedImages, currentPage)
       .then((data) => {
         if (currentPage === 1) {
-          // const totalHitsNumber = response.data.totalHits;
           console.log('fetch przy 1 stronie');
           setImages(data.hits)
           setTotalHits(() => data.totalHits);
@@ -80,11 +75,6 @@ const fetchGallery = async (q, page) => {
     setTimeout(() => { setIsLoading(false) }, 1000);
   }
 
-  // const mapImages = () => {
-    
-  // }
-
-
 //   W odpowiedzi od api przychodzi tablica obiektów, w których ważne są dla ciebie tylko następujące właściwości.
 
 // id - unikalny identyfikator
@@ -96,7 +86,7 @@ const fetchGallery = async (q, page) => {
     <div className={css.app}>
       <Searchbar onSubmit={fetchSearchedValue}/>
       <ImageGallery>
-        {isLoading ? <Loader/> : <ImageGalleryItem/> }
+        {isLoading ? <Loader /> : <ImageGalleryItem images={images} /> }
       </ImageGallery>
       {totalHits!==0 && <Button disabled={disabledButton} onClick={loadMore} />}
 

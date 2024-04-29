@@ -1,16 +1,17 @@
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css'
 
-export const ImageGalleryItem = () => {
+export const ImageGalleryItem = ({images}) => {
 
-        return (
-        <li className={css.item}>
-                <img className={css.image} src="" alt="" />
-        </li>
-    )
+        return images.map(image => (
+                <li key={image.id} className={css.item}>
+                        <img className={css.image} src={image.webformatlURL} alt={image.tags} />
+                </li>
+        ));                        
 
 };
 
 ImageGalleryItem.propTypes = {
+        images: PropTypes.array,
     
 }

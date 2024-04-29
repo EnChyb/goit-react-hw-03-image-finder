@@ -5,7 +5,7 @@ export const Button = ({ disabled, onClick }) => {
 
     return (
         <>
-            <button disabled={disabled} onClick={onClick}>Load more</button>
+            <button disabled={disabled} onClick={onClick}>{disabled? "End of results" : "Load more" }</button>
         </>
     )
 

@@ -15,13 +15,14 @@ export const App = () => {
   //State
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  //const [error, setError] = useState('');
   const [searchedImages, setSearchedImages] = useState('')
   const [totalHits, setTotalHits] = useState(0)
   const [disabledButton, setDisabledButton] = useState(true);
+  const [images, setImages] = useState([])
   console.log(searchedImages)
   console.log(currentPage)
-  console.log(totalHits)
+  console.log(totalHits);
+  console.log(images)
 
 //Pixabay API
 const fetchGallery = async (q, page) => {
@@ -34,7 +35,6 @@ const fetchGallery = async (q, page) => {
 
       return response.data
     } catch (error) {
-      //setError(error);
         console.error('Fetching error:', error)
     }
 }
@@ -44,11 +44,13 @@ const fetchGallery = async (q, page) => {
     setIsLoading(true);
     setSearchedImages(data);
     setCurrentPage(1);
+    setTotalHits(0);
     await fetchGallery(searchedImages, currentPage)
       .then((data) => {
         if (currentPage === 1) {
           // const totalHitsNumber = response.data.totalHits;
-          console.log('fetch przy 1 stronie')
+          console.log('fetch przy 1 stronie');
+          setImages(data.hits)
           setTotalHits(() => data.totalHits);
           checkIfLoadMore(data.totalHits);
         };
@@ -59,7 +61,7 @@ const fetchGallery = async (q, page) => {
   //check if loadmore is abled
   const checkIfLoadMore = (data) => {
           if (data > 12) {
-          console.log('totalHits większe niż 12')
+            console.log('totalHits większe niż 12');
           setDisabledButton(false);
           setCurrentPage(currentPage => currentPage + 1);
           setTotalHits(totalHits => totalHits - 12);
@@ -72,12 +74,15 @@ const fetchGallery = async (q, page) => {
   //load more images
   const loadMore = async() => {
     setIsLoading(true);
-    await fetchGallery(searchedImages, currentPage);
+    await fetchGallery(searchedImages, currentPage)
+      .then(data =>setImages(data.hits));
     checkIfLoadMore(totalHits);
     setTimeout(() => { setIsLoading(false) }, 1000);
-
   }
 
+  // const mapImages = () => {
+    
+  // }
 
 
 //   W odpowiedzi od api przychodzi tablica obiektów, w których ważne są dla ciebie tylko następujące właściwości.
@@ -93,7 +98,7 @@ const fetchGallery = async (q, page) => {
       <ImageGallery>
         {isLoading ? <Loader/> : <ImageGalleryItem/> }
       </ImageGallery>
-      <Button disabled={disabledButton} onClick={loadMore } />
+      {totalHits!==0 && <Button disabled={disabledButton} onClick={loadMore} />}
 
     </div>
   );

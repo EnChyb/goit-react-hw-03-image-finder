@@ -7,11 +7,12 @@ export const Searchbar = ({ onSubmit }) => {
 
     const handleSearchedValue = async (e) => {
         e.preventDefault();
+        //Don't fetch data on button submit if searchedValue is empty
+        if (searchedValue.length >0) {
         await onSubmit(searchedValue);
-        setSearchedValue("");
-
+        setSearchedValue("")            
+        };
     }
-
     
     return (
         <header className={css.searchbar}>

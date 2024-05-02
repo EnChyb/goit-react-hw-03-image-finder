@@ -8,7 +8,7 @@ import { ImageGalleryItem } from "./ImageGalleryItem/ImageGalleryItem";
 import { Loader } from "./Loader/Loader";
 import { useState } from 'react';
 import { Button } from "./Button/Button";
-//import { Modal } from "./Modal/Modal";
+import { Modal } from "./Modal/Modal";
 
 export const App = () => {
 
@@ -19,7 +19,9 @@ export const App = () => {
   const [totalHits, setTotalHits] = useState(0)
   console.log("totalHits State:" + totalHits)
   const [disabledButton, setDisabledButton] = useState(true);
-  const [images, setImages] = useState([])
+  const [images, setImages] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalSrc, setModalSrc] = useState('')
 
 
 //Pixabay API
@@ -84,103 +86,26 @@ const fetchGallery = async (q, page) => {
     setTimeout(() => { setIsLoading(false) }, 1000);
   }
 
-//   W odpowiedzi od api przychodzi tablica obiektów, w których ważne są dla ciebie tylko następujące właściwości.
+  //Modal- handle data from image and change the state to open/close modal
+    const handleImageClick = image => {
+      setOpenModal(true);
+      setModalSrc(image.largeImageURL) //sprawdzić czy działa, jak nie to jak pobrać large url żeby wstawić jako source 
+  };
 
-// id - unikalny identyfikator
-// webformatURL - odnośnik do miniatury dla listy obrazków
-// largeImageURL - odnośnik do dużej wersji dla okna modalnego
+  const closeModal = () => {
+    setOpenModal(false);
+  };
 
-  
+ 
   return (
     <div className={css.app}>
       <Searchbar onSubmit={fetchSearchedValue}/>
       <ImageGallery>
-        {isLoading ? <Loader /> : <ImageGalleryItem images={images} /> }
+        {isLoading ? <Loader /> : <ImageGalleryItem images={images} onClick={handleImageClick } /> }
       </ImageGallery>
-      {totalHits!==0 && <Button disabled={disabledButton} onClick={loadMore} />}
+      {totalHits !== 0 && <Button disabled={disabledButton} onClick={loadMore} />}
+      {openModal && <Modal onClick={closeModal} openModal={modalSrc } />}
 
     </div>
   );
 };
-
-
-// 42474865-55c278fe0045234625bd75cd9
-
-// class App extends Component {
-//   state = {
-//     articles: [],
-//     isLoading: false,
-//     error: '',
-//     currentPage: 1
-//   }
-
-//   timer = null;
-
-//   async componentDidMount() {
-//     this.timer = setInterval(() => {
-//       this.handleCurrentPageUpdate()
-//     }, 10000)
-//     await this.getInitialData()
-//   }
-
-//   async componentDidUpdate() {
-//     await this.getInitialData()
-//   }
-
-//   getInitialData = async () => {
-//     const query = `react&page=${this.state.currentPage}`;
-//     try {
-//       const articles = await api.fetchArticlesWithQuery(query)
-//       this.setState({ articles })
-//     } catch (error) {
-//       this.setState({ error })
-//     } finally {
-//       this.setState({ isLoading: false })
-//     }
-//   }
-
-//   shouldComponentUpdate(nextProps, nextState) {
-//     const oldState = this.state;
-
-//     if (nextState.articles[0]?.title === oldState.articles[0]?.title 
-//             && nextState.currentPage === oldState.currentPage) {
-//       return false
-//     }
-
-//     return true
-//   }
-
-//   handleCurrentPageUpdate = () => {
-//     this.setState((state) => {
-//       return {
-//         currentPage: state.currentPage + 1
-//       }
-//     })
-//   }
-
-//   handleClick = () => {
-//     this.handleCurrentPageUpdate()
-//   }
-
-//   componentWillUnmount() {
-//     clearInterval(this.timer);
-//   }
-
-//   render() {
-//     const { articles, isLoading, error } = this.state;
-
-//     return (
-//       <>
-//         {error && <p>Something went wrong: {error.message}</p>}
-//         {isLoading && <ContentLoader />}
-//         {articles.length > 0 && <ArticleList articles={articles} />}
-//         <button onClick={this.handleClick}>
-//           Next page
-//         </button>
-//       </>
-//     );
-//   }
-
-// }
-
-// export default App;

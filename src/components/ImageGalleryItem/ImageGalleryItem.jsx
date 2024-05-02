@@ -10,7 +10,6 @@ export const ImageGalleryItem = ({ images, onClick }) => {
                         <img
                                 className={css.image}
                                 src={image.webformatURL}
-                                //datasrc={image.largeImageURL}
                                 alt={image.tags}
                                 onClick={() => onClick(image)}
                         />
